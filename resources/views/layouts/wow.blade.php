@@ -83,8 +83,8 @@
                 <form action="{{ route($prefix.'search') }}" method="get" class="flex-1">
                     <label class="relative block">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted"><x-icon name="search" class="w-4 h-4" /></span>
-                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari sapi, peternak, atau data lainnya..."
-                               class="w-full pl-10 pr-4 py-2.5 rounded-2xl border-line bg-white text-sm shadow-soft focus:border-primary focus:ring-primary">
+                        <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari sapi atau peternak..."
+                               class="w-full pl-10 pr-4 py-2.5 rounded-2xl border-line bg-white text-sm shadow-soft focus:border-primary focus:ring-primary placeholder:truncate">
                     </label>
                 </form>
                 <a href="{{ route($prefix.'notifications.index') }}" class="relative h-11 w-11 rounded-2xl bg-white border border-line flex items-center justify-center text-ink">

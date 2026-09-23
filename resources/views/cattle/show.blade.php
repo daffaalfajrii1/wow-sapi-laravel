@@ -128,18 +128,18 @@
     <p class="text-sm text-muted mb-4">Hasil merupakan estimasi AI dan bukan pengganti timbangan ternak. Indikasi Lumpy Skin bukan diagnosis final.</p>
     @include('partials.ai-weight-photo-guide')
     @unless($dead)
-    <div class="grid md:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         @foreach ([['weight','Estimasi Bobot AI', $panel.'.cattle.ai.weight'], ['lumpy','AI Pemeriksaan Kesehatan', $panel.'.cattle.ai.lumpy'], ['combined','Analisis Gabungan', $panel.'.cattle.ai.combined']] as $form)
-            <form method="POST" enctype="multipart/form-data" action="{{ route($form[2], $cattle) }}" class="card p-5 space-y-3">
+            <form method="POST" enctype="multipart/form-data" action="{{ route($form[2], $cattle) }}" class="card p-4 sm:p-5 space-y-3">
                 @csrf
-                <h3 class="font-bold">{{ $form[1] }}</h3>
+                <h3 class="font-bold leading-snug">{{ $form[1] }}</h3>
                 @if($form[0]==='weight')
-                    <p class="text-xs text-muted">Gunakan foto samping satu ekor, kepala hingga kaki terlihat.</p>
+                    <p class="text-sm text-muted leading-relaxed">Gunakan foto samping satu ekor, kepala hingga kaki terlihat.</p>
                 @elseif($form[0]==='lumpy')
-                    <p class="text-xs text-muted">Pastikan sapi terlihat jelas di dalam foto.</p>
+                    <p class="text-sm text-muted leading-relaxed">Pastikan sapi terlihat jelas di dalam foto.</p>
                 @endif
-                <input type="file" name="image" accept="image/jpeg,image/png" required class="text-sm">
-                <button class="btn-primary w-full">Unggah & analisis</button>
+                <x-file-input name="image" label="Pilih foto" required />
+                <button class="btn-primary w-full">Unggah &amp; analisis</button>
             </form>
         @endforeach
     </div>
@@ -214,9 +214,9 @@
     <form method="POST" enctype="multipart/form-data" action="{{ $editHealth ? route($panel.'.cattle.health.ai-update', $editHealth) : route($panel.'.cattle.health.ai', $cattle) }}" class="card p-5 space-y-3 mb-4">
         @csrf
         <p class="text-sm font-semibold">{{ $editHealth ? 'Atau perbarui dengan foto AI' : 'Atau isi dari foto AI Lumpy Skin' }}</p>
-        <p class="text-xs text-muted">Pastikan sapi terlihat jelas. Hasil AI bukan diagnosis final.</p>
-        <input type="file" name="image" accept="image/jpeg,image/png" required class="text-sm">
-        <button class="btn-primary">{{ $editHealth ? 'Analisis & perbarui catatan' : 'Analisis & simpan ke riwayat' }}</button>
+        <p class="text-sm text-muted leading-relaxed">Pastikan sapi terlihat jelas. Hasil AI bukan diagnosis final.</p>
+        <x-file-input name="image" label="Pilih foto" required />
+        <button class="btn-primary w-full sm:w-auto">{{ $editHealth ? 'Analisis & perbarui catatan' : 'Analisis & simpan ke riwayat' }}</button>
     </form>
     @endunless
     @endif

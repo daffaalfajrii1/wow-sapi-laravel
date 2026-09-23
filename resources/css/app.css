@@ -4,7 +4,11 @@
 
 @layer base {
     html { scroll-behavior: smooth; }
-    body { @apply bg-surface text-ink antialiased; }
+    body {
+        @apply bg-surface text-ink antialiased;
+        letter-spacing: 0.01em;
+        word-spacing: 0.06em;
+    }
     [x-cloak] { display: none !important; }
 }
 
@@ -34,13 +38,22 @@
         @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-danger;
     }
     .btn-primary {
-        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-700 transition-colors;
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary-700 transition-colors min-h-12;
     }
     .btn-ghost {
-        @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:bg-primary-soft transition-colors;
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-3 text-sm font-semibold text-ink hover:bg-primary-soft transition-colors min-h-12;
     }
     .input-wow {
-        @apply w-full rounded-xl border-line bg-white text-sm text-ink focus:border-primary focus:ring-primary;
+        @apply w-full min-h-12 rounded-xl border-line bg-white text-sm text-ink focus:border-primary focus:ring-primary;
+    }
+    .field-wow {
+        @apply space-y-2;
+    }
+    .file-wow {
+        @apply flex flex-col gap-3 rounded-2xl border border-dashed border-line bg-primary-50/70 px-4 py-3.5 cursor-pointer;
+    }
+    .file-wow input[type="file"] {
+        @apply sr-only;
     }
     .tab-link {
         @apply px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap;

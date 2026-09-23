@@ -83,6 +83,8 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::put('master/vaksin/{vaccine}', [ModuleController::class, 'updateVaccine'])->name('vaccines.update');
     Route::get('pengguna', [ModuleController::class, 'users'])->name('users.index');
     Route::post('pengguna', [ModuleController::class, 'storeUser'])->name('users.store');
+    Route::put('pengguna/{user}/password', [ModuleController::class, 'updateUserPassword'])->name('users.password');
+    Route::post('pengguna/{user}/verify', [ModuleController::class, 'verifyUser'])->name('users.verify');
 });
 
 Route::middleware(['auth', 'verified', 'role:peternak'])->prefix('peternak')->name('peternak.')->group(function () use ($cattle) {

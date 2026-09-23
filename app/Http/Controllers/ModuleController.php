@@ -10,6 +10,7 @@ use App\Models\FeedRecord;
 use App\Models\HealthRecord;
 use App\Models\MortalityRecord;
 use App\Models\ReproductionRecord;
+use App\Models\LoginOtp;
 use App\Models\User;
 use App\Models\VaccinationSchedule;
 use App\Models\Vaccine;
@@ -18,6 +19,7 @@ use App\Services\CattleService;
 use App\Services\CattleTimelineService;
 use App\Services\VaccinationService;
 use App\Support\DatePeriod;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -234,12 +236,18 @@ class ModuleController extends PanelController
         return back()->with('status', 'Master vaksin diperbarui.');
     }
 
-    public function users(): View
+    public function users(Request $request): View
     {
-        abort_unless(auth()->user()->isAdmin(), 403);
-        $users = User::with('roles', 'farmerProfile')->latest()->paginate(20);
+        abort_unless($request->user()->isAdmin(), 403);
+        $filter = $request->string('filter')->toString();
+        $users = User::with('roles', 'farmerProfile')
+            ->when($filter === 'pending', fn ($q) => $q->whereNull('email_verified_at'))
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+        $pendingCount = User::query()->whereNull('email_verified_at')->count();
 
-        return view('admin.users', compact('users'));
+        return view('admin.users', compact('users', 'filter', 'pendingCount'));
     }
 
     public function storeUser(Request $request, CattleService $cattleService): RedirectResponse
@@ -264,7 +272,42 @@ class ModuleController extends PanelController
             $cattleService->ensureFarmerProfile($user, ['phone' => $data['phone'] ?? '-']);
         }
 
-        return back()->with('status', 'Pengguna ditambahkan.');
+        return back()->with('status', 'Pengguna ditambahkan dan langsung dapat masuk (tanpa OTP).');
+    }
+
+    public function updateUserPassword(Request $request, User $user): RedirectResponse
+    {
+        abort_unless($request->user()->isAdmin(), 403);
+        $request->validate([
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ], [
+            'password.confirmed' => 'Ulangi kata sandi baru tidak sama.',
+        ]);
+
+        $user->update([
+            'password' => $request->string('password'),
+        ]);
+
+        return back()->with('status', "Kata sandi {$user->name} diperbarui.");
+    }
+
+    public function verifyUser(Request $request, User $user): RedirectResponse
+    {
+        abort_unless($request->user()->isAdmin(), 403);
+
+        if ($user->hasVerifiedEmail()) {
+            return back()->with('status', "{$user->name} sudah terverifikasi.");
+        }
+
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+
+        LoginOtp::query()
+            ->where('user_id', $user->id)
+            ->whereNull('verified_at')
+            ->update(['verified_at' => now()]);
+
+        return back()->with('status', "{$user->name} diverifikasi admin. Pengguna dapat masuk tanpa OTP.");
     }
 
     public function settings(): View

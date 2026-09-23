@@ -2,6 +2,15 @@
 @section('content')
 <h1 class="text-2xl font-extrabold mb-2">{{ $farmer->user?->name }}</h1>
 <p class="text-muted mb-4">{{ $farmer->farm_name }} · {{ $farmer->phone }} · {{ $farmer->regency }} {{ $farmer->province }}</p>
+@if ($farmer->user && ! $farmer->user->hasVerifiedEmail())
+    <div class="mb-4 rounded-2xl bg-amber-50 text-amber-900 px-4 py-3 text-sm flex flex-wrap items-center justify-between gap-3">
+        <p>Akun masih menunggu OTP. Admin bisa memverifikasi langsung agar peternak dapat masuk.</p>
+        <form method="POST" action="{{ route('admin.users.verify', $farmer->user) }}">
+            @csrf
+            <button class="btn-primary !py-2">Verifikasi admin</button>
+        </form>
+    </div>
+@endif
 <div class="card overflow-hidden">
 <div class="overflow-x-auto">
 <table class="table-wow">

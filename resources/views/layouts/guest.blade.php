@@ -21,12 +21,12 @@
         </div>
         <p class="text-sm text-white/60 relative z-10">Sapi Sehat, Peternak Sejahtera</p>
     </div>
-    <div class="flex items-center justify-center p-6">
+    <div class="flex items-start lg:items-center justify-center p-4 sm:p-6">
         <div class="w-full max-w-md">
-            <a href="/" class="lg:hidden inline-block mb-2">
-                <x-wow-logo class="h-12 w-auto max-w-[240px]" />
+            <a href="/" class="lg:hidden inline-block mb-1">
+                <x-wow-logo class="h-11 w-auto max-w-[200px]" />
             </a>
-            <div class="card p-8 mt-6">
+            <div class="card p-5 sm:p-8 mt-4 sm:mt-6">
                 {{ $slot }}
             </div>
         </div>

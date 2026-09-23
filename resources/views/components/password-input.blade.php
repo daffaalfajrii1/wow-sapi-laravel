@@ -3,7 +3,7 @@
 <div>
     <label for="{{ $id }}" class="block text-sm font-medium mb-1">{{ $label }}</label>
     <div x-data="{ show: false }" class="relative">
-        <input id="{{ $id }}" :type="show ? 'text' : 'password'" name="{{ $name }}" autocomplete="{{ $autocomplete }}"
+        <input id="{{ $id }}" :type="show ? 'text' : 'password'" name="{{ $name }}" autocomplete="{{ $autocomplete }}" required
             {{ $attributes->merge(['class' => 'input-wow pr-12']) }}>
         <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 px-3 text-muted hover:text-ink" :aria-label="show ? 'Sembunyikan kata sandi' : 'Lihat kata sandi'">
             <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12s-3.75 6.75-9.75 6.75S2.25 12 2.25 12z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
