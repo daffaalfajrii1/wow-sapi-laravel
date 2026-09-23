@@ -138,7 +138,7 @@
                 @elseif($form[0]==='lumpy')
                     <p class="text-sm text-muted leading-relaxed">Pastikan sapi terlihat jelas di dalam foto.</p>
                 @endif
-                <x-file-input name="image" label="Pilih foto" required />
+                <x-file-input name="image" required />
                 <button class="btn-primary w-full">Unggah &amp; analisis</button>
             </form>
         @endforeach
@@ -215,7 +215,7 @@
         @csrf
         <p class="text-sm font-semibold">{{ $editHealth ? 'Atau perbarui dengan foto AI' : 'Atau isi dari foto AI Lumpy Skin' }}</p>
         <p class="text-sm text-muted leading-relaxed">Pastikan sapi terlihat jelas. Hasil AI bukan diagnosis final.</p>
-        <x-file-input name="image" label="Pilih foto" required />
+        <x-file-input name="image" required />
         <button class="btn-primary w-full sm:w-auto">{{ $editHealth ? 'Analisis & perbarui catatan' : 'Analisis & simpan ke riwayat' }}</button>
     </form>
     @endunless

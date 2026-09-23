@@ -50,7 +50,7 @@
         @apply space-y-2;
     }
     .file-wow {
-        @apply flex flex-col gap-3 rounded-2xl border border-dashed border-line bg-primary-50/70 px-4 py-3.5 cursor-pointer;
+        @apply flex flex-col gap-3 rounded-2xl border border-dashed border-line bg-primary-50/70 px-4 py-3.5;
     }
     .file-wow input[type="file"] {
         @apply sr-only;

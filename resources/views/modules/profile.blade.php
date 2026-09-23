@@ -17,7 +17,10 @@
             <input name="province" class="input-wow" placeholder="Provinsi" value="{{ $user->farmerProfile->province }}">
         </div>
     @endif
-    <input type="file" name="avatar" accept="image/*">
+    <div class="field-wow">
+        <x-input-label value="Foto profil" />
+        <x-file-input name="avatar" />
+    </div>
     <button class="btn-primary">Simpan profil</button>
 </form>
 

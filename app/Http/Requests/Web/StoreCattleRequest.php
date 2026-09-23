@@ -24,7 +24,7 @@ class StoreCattleRequest extends FormRequest
             'origin' => ['nullable', 'string', 'max:120'],
             'entry_date' => ['nullable', 'date'],
             'notes' => ['nullable', 'string'],
-            'main_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'main_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
 
         if ($this->user()?->isAdmin()) {

@@ -57,7 +57,7 @@
         </div>
         <div class="field-wow">
             <x-input-label value="Foto utama" />
-            <x-file-input name="main_photo" label="Pilih foto" />
+            <x-file-input name="main_photo" />
         </div>
     </div>
     <div class="field-wow">

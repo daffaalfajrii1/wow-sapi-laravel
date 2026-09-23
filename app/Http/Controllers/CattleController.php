@@ -214,7 +214,7 @@ class CattleController extends PanelController
             'score' => BcsService::scoreRules(),
             'notes' => ['nullable', 'string'],
             'assessed_at' => ['nullable', 'date'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ]);
         $path = $request->file('image')?->store('cattle', 'public');
         $row = $bcs->create(array_merge($data, ['cattle_id' => $cattle->id]), $request->user()->id, $path);
@@ -273,7 +273,7 @@ class CattleController extends PanelController
         $this->authorize('update', $record->cattle);
         $this->authorize('examine', $record->cattle);
         $request->validate([
-            'image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:10240'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'],
         ]);
         try {
             $exam = $ai->examineLumpy($record->cattle, $request->user(), $request->file('image'));

@@ -28,7 +28,7 @@ class UpdateCattleRequest extends FormRequest
             'entry_date' => ['nullable', 'date'],
             'status' => ['nullable', Rule::in(['active', 'sold', 'dead'])],
             'notes' => ['nullable', 'string'],
-            'main_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:5120'],
+            'main_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
 
         if ($this->user()?->isAdmin()) {

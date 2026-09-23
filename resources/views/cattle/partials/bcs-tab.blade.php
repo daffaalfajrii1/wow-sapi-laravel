@@ -70,7 +70,7 @@
             </div>
             <div>
                 <x-input-label value="Foto kondisi tubuh" />
-                <input type="file" name="image" accept="image/jpeg,image/png" class="mt-1 text-sm">
+                <x-file-input name="image" class="mt-1" />
             </div>
             <button class="btn-primary w-full">Simpan Penilaian BCS</button>
         </form>
