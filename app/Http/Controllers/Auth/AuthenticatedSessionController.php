@@ -41,14 +41,18 @@ class AuthenticatedSessionController extends Controller
         RateLimiter::clear($request->throttleKey());
 
         if (! $user->hasVerifiedEmail()) {
-            $otp->issue($user, OtpService::PURPOSE_REGISTER, 'web', $request->ip());
             $request->session()->put('otp_user_id', $user->id);
             $request->session()->put('otp_purpose', OtpService::PURPOSE_REGISTER);
 
-            return redirect()->route('otp.notice')->with(
-                'status',
-                'Email belum diverifikasi. Kode OTP telah dikirim ke email Anda.'
-            );
+            try {
+                $otp->issue($user, OtpService::PURPOSE_REGISTER, 'web', $request->ip());
+                $status = 'Email belum diverifikasi. Kode OTP telah dikirim ke email Anda.';
+            } catch (\Throwable $e) {
+                report($e);
+                $status = 'Email belum diverifikasi. Jika kode OTP belum sampai, tekan kirim ulang.';
+            }
+
+            return redirect()->route('otp.notice')->with('status', $status);
         }
 
         Auth::login($user, $request->boolean('remember'));

@@ -44,7 +44,12 @@ class AuthController extends Controller
         ]);
 
         event(new Registered($user));
-        $otp->issue($user, OtpService::PURPOSE_REGISTER, 'api', $request->ip());
+
+        try {
+            $otp->issue($user, OtpService::PURPOSE_REGISTER, 'api', $request->ip());
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return ApiResponse::success(['email' => $user->email], 'Pendaftaran berhasil. Masukkan kode OTP dari email.', 201);
     }

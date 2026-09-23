@@ -68,9 +68,15 @@ class OtpVerificationController extends Controller
             return redirect()->route('login')->with('status', 'Email sudah diverifikasi. Silakan masuk.');
         }
 
-        $otp->issue($user, OtpService::PURPOSE_REGISTER, 'web', $request->ip());
+        try {
+            $otp->issue($user, OtpService::PURPOSE_REGISTER, 'web', $request->ip());
+            $status = 'Kode OTP baru telah dikirim ke email Anda.';
+        } catch (\Throwable $e) {
+            report($e);
+            $status = 'Gagal mengirim OTP. Coba lagi beberapa saat, atau periksa folder spam.';
+        }
 
-        return back()->with('status', 'Kode OTP baru telah dikirim ke email Anda.');
+        return back()->with('status', $status);
     }
 
     protected function pendingUser(Request $request): ?User

@@ -42,7 +42,7 @@ class OtpService
             'ip_address' => $ip,
         ]);
 
-        $this->sendMail($user, $purpose, $code);
+        $this->sendMailAfterResponse($user, $purpose, $code);
 
         RateLimiter::hit(
             $this->resendKey($user, $purpose, $channel),
@@ -99,23 +99,35 @@ class OtpService
             ->first();
     }
 
-    protected function sendMail(User $user, string $purpose, string $code): void
+    protected function sendMailAfterResponse(User $user, string $purpose, string $code): void
     {
         $ttl = (int) config('wowsapi.otp.ttl_minutes', 5);
+        $userId = $user->id;
+        $resetUrl = null;
 
-        try {
-            if ($purpose === self::PURPOSE_RESET) {
-                $resetUrl = url(route('password.reset', [
-                    'token' => Password::broker()->createToken($user),
-                    'email' => $user->email,
-                ], false));
-                $user->notify(new PasswordResetOtpNotification($code, $ttl, $resetUrl));
-            } else {
-                $user->notify(new RegistrationOtpNotification($code, $ttl));
-            }
-        } catch (\Throwable $e) {
-            report($e);
+        if ($purpose === self::PURPOSE_RESET) {
+            $resetUrl = url(route('password.reset', [
+                'token' => Password::broker()->createToken($user),
+                'email' => $user->email,
+            ], false));
         }
+
+        dispatch(function () use ($userId, $purpose, $code, $ttl, $resetUrl) {
+            $user = User::query()->find($userId);
+            if (! $user) {
+                return;
+            }
+
+            try {
+                if ($purpose === self::PURPOSE_RESET) {
+                    $user->notify(new PasswordResetOtpNotification($code, $ttl, $resetUrl));
+                } else {
+                    $user->notify(new RegistrationOtpNotification($code, $ttl));
+                }
+            } catch (\Throwable $e) {
+                report($e);
+            }
+        })->afterResponse();
     }
 
     protected function assertPurpose(string $purpose): void

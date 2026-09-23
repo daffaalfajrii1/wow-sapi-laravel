@@ -47,13 +47,17 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        $otp->issue($user, OtpService::PURPOSE_REGISTER, 'web', $request->ip());
         $request->session()->put('otp_user_id', $user->id);
         $request->session()->put('otp_purpose', OtpService::PURPOSE_REGISTER);
 
-        return redirect()->route('otp.notice')->with(
-            'status',
-            'Pendaftaran berhasil. Masukkan kode OTP yang kami kirim ke email Anda.'
-        );
+        try {
+            $otp->issue($user, OtpService::PURPOSE_REGISTER, 'web', $request->ip());
+            $status = 'Pendaftaran berhasil. Masukkan kode OTP yang kami kirim ke email Anda.';
+        } catch (\Throwable $e) {
+            report($e);
+            $status = 'Akun sudah dibuat. Jika kode OTP belum sampai, tekan kirim ulang atau periksa folder spam.';
+        }
+
+        return redirect()->route('otp.notice')->with('status', $status);
     }
 }
