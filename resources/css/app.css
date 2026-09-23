@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html { scroll-behavior: smooth; }
+    body { @apply bg-surface text-ink antialiased; }
+    [x-cloak] { display: none !important; }
+}
+
+@layer components {
+    .card {
+        @apply bg-white rounded-2xl shadow-card border border-line;
+    }
+    .kpi-icon {
+        @apply h-12 w-12 rounded-full flex items-center justify-center shrink-0;
+    }
+    .nav-item {
+        @apply flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors;
+    }
+    .nav-item-active {
+        @apply bg-primary text-white shadow-soft;
+    }
+    .nav-item-idle {
+        @apply text-ink/80 hover:bg-primary-soft hover:text-primary-dark;
+    }
+    .badge-sehat {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary-soft text-primary-dark;
+    }
+    .badge-suspek {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700;
+    }
+    .badge-bahaya {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-danger;
+    }
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-700 transition-colors;
+    }
+    .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:bg-primary-soft transition-colors;
+    }
+    .input-wow {
+        @apply w-full rounded-xl border-line bg-white text-sm text-ink focus:border-primary focus:ring-primary;
+    }
+    .tab-link {
+        @apply px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap;
+    }
+    .table-wow {
+        @apply min-w-full text-sm;
+    }
+    .table-wow thead {
+        @apply bg-primary-50 text-muted text-left;
+    }
+    .table-wow th {
+        @apply px-4 py-3 font-medium whitespace-nowrap;
+    }
+    .table-wow td {
+        @apply px-4 py-3 align-middle;
+    }
+    .table-wow tbody tr {
+        @apply border-t border-line;
+    }
+    .table-wow tbody tr:nth-child(even) {
+        @apply bg-primary-50/50;
+    }
+    .table-wow tbody tr:hover {
+        @apply bg-primary-soft/70;
+    }
+    .table-wow .col-no {
+        @apply w-12 text-center text-muted tabular-nums;
+    }
+}
