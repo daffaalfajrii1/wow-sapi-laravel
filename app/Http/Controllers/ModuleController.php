@@ -320,9 +320,16 @@ class ModuleController extends PanelController
 
     public function notifications(): View
     {
-        $items = auth()->user()->notifications()->paginate(20);
+        app(\App\Services\PushNotificationService::class)->sendVaccineReminders();
+        $items = auth()->user()->notifications()->latest()->paginate(20);
+        $ids = \App\Models\Cattle::ownedBy(auth()->user())->pluck('id');
+        $alerts = app(\App\Services\PushNotificationService::class)->upcomingAlertsForCattleIds($ids);
 
-        return view('modules.notifications', ['items' => $items, 'panel' => $this->panel()]);
+        return view('modules.notifications', [
+            'items' => $items,
+            'alerts' => $alerts,
+            'panel' => $this->panel(),
+        ]);
     }
 
     public function markNotifications(): RedirectResponse

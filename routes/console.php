@@ -11,7 +11,8 @@ Artisan::command('inspire', function () {
 
 Artisan::command('wowsapi:send-vaccine-reminders', function (PushNotificationService $push) {
     $count = $push->sendVaccineReminders();
-    $this->info("Pengingat vaksin terkirim: {$count}");
-})->purpose('Kirim pengingat vaksin H-7, H-1, dan Hari H');
+    $this->info("Pengingat vaksin H-1 & Hari H terkirim: {$count}");
+})->purpose('Kirim pengingat vaksin H-1 dan Hari H');
 
 Schedule::command('wowsapi:send-vaccine-reminders')->dailyAt('07:00');
+Schedule::command('wowsapi:send-vaccine-reminders')->dailyAt('12:00');

@@ -39,7 +39,8 @@ class CattleApiController extends Controller
                     ->orWhere('name', 'like', "%{$search}%");
             });
         }
-        $items = $q->paginate(20);
+        $perPage = min(100, max(1, $request->integer('per_page', 20)));
+        $items = $q->paginate($perPage);
 
         return ApiResponse::success(CattleResource::collection($items)->response()->getData(true));
     }
@@ -346,8 +347,10 @@ class CattleApiController extends Controller
             'notes' => ['nullable', 'string'],
         ]);
         $schedule->update($data);
+        $fresh = $schedule->fresh(['cattle.farmer.user', 'vaccine']);
+        app(PushNotificationService::class)->remindIfDueSoon($fresh);
 
-        return ApiResponse::success($schedule->fresh('vaccine'), 'Jadwal vaksin diperbarui.');
+        return ApiResponse::success($fresh->loadMissing('vaccine'), 'Jadwal vaksin diperbarui.');
     }
 
     public function destroySchedule(VaccinationSchedule $schedule)

@@ -358,6 +358,7 @@ class CattleController extends PanelController
             'notes' => ['nullable', 'string'],
         ]);
         $schedule->update($data);
+        app(\App\Services\PushNotificationService::class)->remindIfDueSoon($schedule->fresh(['cattle.farmer.user', 'vaccine']));
 
         return back()->with('status', 'Jadwal vaksin diperbarui.');
     }

@@ -10,15 +10,17 @@ use App\Models\VaccinationSchedule;
 use App\Services\CattleReportPdfService;
 use App\Services\CattleTimelineService;
 use App\Services\DashboardService;
+use App\Services\PushNotificationService;
 use App\Support\ApiResponse;
 use App\Support\DatePeriod;
 use Illuminate\Http\Request;
 
 class FarmerApiController extends Controller
 {
-    public function dashboard(Request $request, DashboardService $dashboard)
+    public function dashboard(Request $request, DashboardService $dashboard, PushNotificationService $push)
     {
         $this->ensureFarmer($request);
+        $push->sendVaccineReminders();
         $period = DatePeriod::fromRequest($request, '6m');
         $cattleId = $request->integer('cattle_id') ?: null;
         $data = $dashboard->farmer($request->user(), $period, $cattleId);
@@ -91,6 +93,8 @@ class FarmerApiController extends Controller
                 'to' => $period->to?->toDateString(),
             ],
             'activities' => $activities,
+            'vaccine_alerts' => app(PushNotificationService::class)->upcomingAlertsForCattleIds($ids),
+            'unread_notifications' => $request->user()->unreadNotifications()->count(),
             'bcs_recommendations' => ($data['assessed_cattle'] ?? collect())->map(fn (Cattle $c) => [
                 'cattle_id' => $c->id,
                 'cattle_code' => $c->code,
@@ -115,12 +119,17 @@ class FarmerApiController extends Controller
         ]);
     }
 
-    public function notifications(Request $request)
+    public function notifications(Request $request, PushNotificationService $push)
     {
-        $items = $request->user()->notifications()->paginate(20);
+        // Pastikan H-1 / Hari H terbuat meski cron server belum jalan.
+        $push->sendVaccineReminders();
+
+        $items = $request->user()->notifications()->latest()->paginate(20);
+        $ids = Cattle::ownedBy($request->user())->pluck('id');
 
         return ApiResponse::success([
             'unread' => $request->user()->unreadNotifications()->count(),
+            'vaccine_alerts' => $push->upcomingAlertsForCattleIds($ids),
             'items' => $items->through(fn ($n) => [
                 'id' => $n->id,
                 'data' => $n->data,
